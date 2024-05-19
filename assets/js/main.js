@@ -1,5 +1,7 @@
 const pokemonList = document.getElementById('pokemonList')
 const loadMoreButton = document.getElementById('loadMoreButton')
+const detailPage = document.getElementById("card")
+const testeHtml = document.getElementById("teste")
 
 const maxRecords = 151
 const limit = 10
@@ -7,6 +9,7 @@ let offset = 0;
 
 function convertPokemonToLi(pokemon) {
     return `
+    <div onclick="viewDetails(${pokemon.number})" style="cursor: pointer; class="pokemons-card"  id="card">
         <li class="pokemon ${pokemon.type}">
             <span class="number">#${pokemon.number}</span>
             <span class="name">${pokemon.name}</span>
@@ -19,14 +22,14 @@ function convertPokemonToLi(pokemon) {
                 <img src="${pokemon.photo}"
                      alt="${pokemon.name}">
             </div>
-        </li>
+        </li>  </div>
     `
 }
 
 function loadPokemonItens(offset, limit) {
     pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
         const newHtml = pokemons.map(convertPokemonToLi).join('')
-        pokemonList.innerHTML += newHtml
+        pokemonList.innerHTML += newHtml        
     })
 }
 
@@ -45,3 +48,13 @@ loadMoreButton.addEventListener('click', () => {
         loadPokemonItens(offset, limit)
     }
 })
+
+async function viewDetails(idPoke) {
+    await pokeApi.getPokemonDetailId(idPoke).then((pokemon) => {
+        if (testeHtml) {
+            testeHtml.textContent = `${JSON.stringify(pokemon, undefined, idPoke)}`;
+        }
+        console.log("aqui", pokemon);
+    });   
+}
+    
