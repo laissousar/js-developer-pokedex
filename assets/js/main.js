@@ -1,6 +1,6 @@
 const pokemonList = document.getElementById('pokemonList')
 const loadMoreButton = document.getElementById('loadMoreButton')
-const pokemonDetail = document.getElementById('pokemonDetail')
+//const pokemonDetail = document.getElementById('pokemonDetail')
 
 
 
@@ -29,14 +29,28 @@ function convertPokemonToLi(pokemon) {
 }
 function convertPokemonToDiv(pokemon) {
     return `
-        <div class="pokemon-detail">
-            <h2class="header_detail_name">${pokemon.name}</h2>
-            
-            <img src="${pokemon.image}" alt="${pokemon.name}">
-            <p>Tipo: ${pokemon.type}</p>
-            <p>Peso: ${pokemon.weight} kg</p>
-            <p>Altura: ${pokemon.height} m</p>
-        </div>
+    <header class="header_detail">
+    <div class="${pokemon.type}">
+    <span id="pokemonName" class="header_detail_name">${pokemon.name}</span>
+    <span id="pokemonNumber" class="header_detail_id">${pokemon.number}</span>
+    </div>
+    </header>
+<main>
+    <div class="apresentacao_pokemom" >
+        <img class="apresentacao_pokemom_foto" src="${pokemon.photo}" alt="${pokemon.name}">
+        <span class="apresentacao_pokemom_tipo">${pokemon.type}</span>
+        <span class="apresentacao_pokemom_sobre" >About</span>
+        <div class="apresentacao_pokemom_caracteristica_conteiner" >
+            <div class="apresentacao_pokemom_caracteristica">
+                <span class="apresentacao_pokemom_caracteristica_detalhe">${pokemon.weight} kg</span>
+                <span class="apresentacao_pokemom_caracteristica_detalhe2">Weight</span>
+            </div>
+            <div class="apresentacao_pokemom_caracteristica">
+                <span class="apresentacao_pokemom_caracteristica_detalhe">${pokemon.height} m</span>
+                <span class="apresentacao_pokemom_caracteristica_detalhe2">Height</span>
+            </div>
+    </div>
+</main>
     `;
 }
 function loadPokemonItens(offset, limit) {
@@ -46,12 +60,20 @@ function loadPokemonItens(offset, limit) {
     })
 }
 function loadPokemonDetail(id) {
+
     pokeApi.getPokemonDetailId(id).then((pokemon) => {
         const newWindow = window.open(`./detail.html?id=${id}`, "_blank");
+        
         newWindow.onload = function() {
-        const pokemonHtml = convertPokemonToDiv(pokemon);
-        newWindow.document.write(pokemonHtml);
-        newWindow.document.close();
+            const pokemonHtml = convertPokemonToDiv(pokemon);
+            const pokemonDetailElement = newWindow.document.getElementById('pokemonDetail');
+            
+            if (pokemonDetailElement) {
+                pokemonDetailElement.innerHTML = pokemonHtml;
+            } else {
+                console.error('Elemento pokemonDetail não encontrado na nova janela.');
+            }
+            newWindow.document.close();
         }
     });
 }
@@ -73,10 +95,9 @@ loadMoreButton.addEventListener('click', () => {
 })
 
 function viewDetails(id) {
+
     const link = document.createElement("a");
-    //link.setAttribute("href", `./detail.html?id=${id}`)
-   // const newWindow = window.open(link, "_blank");
+
     loadPokemonDetail(id)
-    //console.log(loadPokemonDetail(id))
 }
 
